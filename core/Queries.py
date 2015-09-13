@@ -6,20 +6,19 @@ Created on Sep 13, 2015
 from core import Index
 from core import Data
 from core import Contants
+from numpy import abs
 
 def boolean_queries(query):
     #preprocessing
     posting=Data.read_dataStruct_from_file(Contants.POSTING_LIST_FILE_NAME)
     
     setlist=[]
-    for word in query.split():
-         
+    for word in query.split():         
         word=Index.applyFilters(word)
          
         if word in posting:
             setlist.append(set(posting[word]))
-    
-    
+        
     answer=set.intersection(*setlist)
     
     return list(answer)
@@ -66,7 +65,37 @@ def boolean_queries_implement_using_lists(query):
     
     return answer
 
+def boolean_queries_with_proximity(query,proximity):
+    #preprocessing
+    posting=Data.read_dataStruct_from_file(Contants.POSTING_LIST_FILE_NAME)    
+    wordsIndex=Data.read_dataStruct_from_file(Contants.WORD_INDEX_FILE_NAME)
+    
+    setlist=[]
+    for word in query.split():         
+        word=Index.applyFilters(word)         
+        if word in posting:            
+            setlist.append(set(posting[word]))
+        
+    wordList= [ Index.applyFilters(word) for word in query.split() if Index.applyFilters(word) in posting]
+    DocIDList=list(set.intersection(*setlist))
+    
+    answer=[]
+    
+    for word1 in wordList:
+        wordList.remove(word1)
+        for word2 in wordList:
+            for DocID in DocIDList:
+                for PosID1 in wordsIndex[word1][0][DocID]: 
+                    for PosID2 in wordsIndex[word2][0][DocID]:
+                        if abs(PosID1-PosID2)<=proximity:
+                            if DocID not in answer:
+                                answer.append(DocID)
+        
+    return list(answer)
+
 # example usage
 # query='four dell'
+# proximity=700
 # print boolean_queries(query)
 # print boolean_queries_implement_using_lists(query)
+# print boolean_queries_with_proximity(query,proximity)
