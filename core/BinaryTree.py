@@ -137,4 +137,4 @@ def test_balanced_tree():
     #bt=balancedTree(wordsIndex)
     #DepthFirstSearchPrintNodes(bt)
         
-test_balanced_tree()
+#test_balanced_tree()

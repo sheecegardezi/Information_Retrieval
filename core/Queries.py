@@ -6,6 +6,7 @@ Created on Sep 13, 2015
 from core import Index
 from core import Data
 from core import Contants
+from core import Permuterm
 from numpy import abs
 
 def boolean_queries(query):
@@ -34,8 +35,7 @@ def boolean_queries_implement_using_lists(query):
          
         if word in posting:
             p.append(posting[word])
-             
-     
+
     index1=0
     index2=0
     p1=p[0][index1]
@@ -93,9 +93,26 @@ def boolean_queries_with_proximity(query,proximity):
         
     return list(answer)
 
+def wlidCard_queries_using_permuterm_index(query):
+    
+    posting=Data.read_dataStruct_from_file(Contants.POSTING_LIST_FILE_NAME)
+    
+    query=Permuterm.standardize_wildcard_query(query)
+    DocList=[]
+   
+    for word in posting:
+        permutermIndexes=Permuterm.create_permuterm_indexes(word)
+        for permuterm in permutermIndexes:        
+            if query in permuterm:
+                DocList= DocList+ posting[word]
+                break
+                
+    return set(DocList)
 # example usage
 # query='four dell'
 # proximity=700
 # print boolean_queries(query)
 # print boolean_queries_implement_using_lists(query)
 # print boolean_queries_with_proximity(query,proximity)
+# query='bi*sh'
+# print wlidCard_queries_using_permuterm_index(query)

@@ -4103,8 +4103,6 @@ asS'aa'
 p1689
 (lp1690
 g264
-ag152
-ag14
 asS'followup'
 p1691
 (lp1692
