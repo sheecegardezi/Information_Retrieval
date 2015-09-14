@@ -111,7 +111,7 @@ def addRange(bt,ordered,low,high):
         addRange(bt,ordered,mid+1,high)
         
 
-def DepthFirstSearchPrintNodes(bt):
+def DepthFirstSearchPrintRoot(bt):
     que=[]
     
     counter=1  
@@ -120,6 +120,25 @@ def DepthFirstSearchPrintNodes(bt):
         que.append(bt.root.left)
     if bt.root.left:
         que.append(bt.root.right)
+    while que:
+        node=que.pop()
+        counter = counter+1
+        if node:
+            print counter,node.value
+            if node.right:
+                que.append(node.left)
+            if node.left:
+                que.append(node.right)
+
+def DepthFirstSearchPrintNode(bt):
+    que=[]
+    
+    counter=1  
+    print counter, bt.value
+    if bt.left:
+        que.append(bt.left)
+    if bt.left:
+        que.append(bt.right)
     while que:
         node=que.pop()
         counter = counter+1

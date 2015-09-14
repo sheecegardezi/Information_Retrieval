@@ -8,6 +8,8 @@ from core import Data
 from core import Contants
 from core import Permuterm
 from numpy import abs
+from core import BinaryTree
+from queue import Queue
 
 def boolean_queries(query):
     #preprocessing
@@ -96,8 +98,8 @@ def boolean_queries_with_proximity(query,proximity):
 def wlidCard_queries_using_permuterm_index(query):
     
     posting=Data.read_dataStruct_from_file(Contants.POSTING_LIST_FILE_NAME)
-    
     query=Permuterm.standardize_wildcard_query(query)
+    
     DocList=[]
    
     for word in posting:
@@ -108,11 +110,30 @@ def wlidCard_queries_using_permuterm_index(query):
                 break
                 
     return set(DocList)
-# example usage
-# query='four dell'
-# proximity=700
-# print boolean_queries(query)
-# print boolean_queries_implement_using_lists(query)
-# print boolean_queries_with_proximity(query,proximity)
-# query='bi*sh'
-# print wlidCard_queries_using_permuterm_index(query)
+
+
+def trailing_wildCard_queries_using_tree(query):
+    
+    query=query[:-1]
+    print query
+    indexedWords=Data.read_dataStruct_from_file(Contants.WORD_INDEX_FILE_NAME)
+    bt=BinaryTree.balancedTree(indexedWords)
+    
+    que=Queue()
+    
+    if bt.root.left:
+        que.put(bt.root.left)
+    if bt.root.left:
+        que.put(bt.root.right)
+    
+    while not que.empty():
+        node=que.get()
+        if node:
+            if query in node.value:
+                BinaryTree.DepthFirstSearchPrintNode(node)
+            else:
+                if node.right:
+                    que.put(node.left)
+                if node.left:
+                    que.put(node.right)    
+    
